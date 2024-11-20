@@ -1,11 +1,11 @@
 "use client";
 
+import { PREDEFINED_PALETTES } from "@/lib/constants";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
-import { PREDEFINED_PALETTES } from "@/lib/constants";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface ColorPickerProps {
   colors: string[];
@@ -24,9 +24,8 @@ export function ColorPicker({ colors, onChange }: ColorPickerProps) {
   const removeColor = (colorToRemove: string) => {
     onChange(colors.filter((c) => c !== colorToRemove));
   };
-
   const addPalette = (paletteColors: string[]) => {
-    const newColors = [...new Set([...colors, ...paletteColors])];
+    const newColors = Array.from(new Set([...colors, ...paletteColors]));
     onChange(newColors);
   };
 
@@ -58,14 +57,8 @@ export function ColorPicker({ colors, onChange }: ColorPickerProps) {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-3">
-            <HexColorPicker
-              color={color}
-              onChange={setColor}
-            />
-            <Button
-              className="mt-2 w-full"
-              onClick={() => addColor(color)}
-            >
+            <HexColorPicker color={color} onChange={setColor} />
+            <Button className="mt-2 w-full" onClick={() => addColor(color)}>
               Add Color
             </Button>
           </PopoverContent>
@@ -80,7 +73,7 @@ export function ColorPicker({ colors, onChange }: ColorPickerProps) {
               key={key}
               variant="outline"
               className="flex items-center justify-between w-full"
-              onClick={() => addPalette(palette.colors)}
+              onClick={() => addPalette([...palette.colors])}
             >
               <span>{palette.name}</span>
               <div className="flex gap-1">

@@ -11,11 +11,7 @@ interface ImageUploadProps {
   className?: string;
 }
 
-export function ImageUpload({
-  value,
-  onChange,
-  className,
-}: ImageUploadProps) {
+export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
@@ -27,7 +23,7 @@ export function ImageUpload({
         reader.readAsDataURL(file);
       }
     },
-    [onChange]
+    [onChange],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -45,7 +41,7 @@ export function ImageUpload({
         className={cn(
           "relative flex h-32 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50",
           isDragActive && "border-primary",
-          className
+          className,
         )}
       >
         <input {...getInputProps()} />

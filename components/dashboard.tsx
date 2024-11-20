@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, Plus, Grid, List } from "lucide-react";
+import { Grid, List, Plus, Search } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
+import { AddInspirationDialog } from "./add-inspiration-dialog";
+import { InspirationGrid } from "./inspiration-grid";
+import { InspirationList } from "./inspiration-list";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { InspirationGrid } from "./inspiration-grid";
-import { InspirationList } from "./inspiration-list";
-import { AddInspirationDialog } from "./add-inspiration-dialog";
 
 export function Dashboard() {
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -35,6 +36,11 @@ export function Dashboard() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              <Link href="/drawboard">
+                <Button variant="outline">
+                  <Plus className="mr-2 h-4 w-4" /> Drawboard
+                </Button>
+              </Link>
               <Button onClick={() => setIsAddDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" /> Add New
               </Button>

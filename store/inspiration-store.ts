@@ -1,7 +1,26 @@
 "use client";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+export type InspirationCategory =
+  | "Frontend"
+  | "Backend"
+  | "Full Stack"
+  | "Mobile"
+  | "Desktop"
+  | "UI/UX"
+  | "Other";
+
+export type InspirationType =
+  | "Landing Page"
+  | "E-commerce"
+  | "Dashboard"
+  | "Blog"
+  | "Portfolio"
+  | "Documentation"
+  | "Social Media"
+  | "Other";
 
 export type InspirationItem = {
   id: string;
@@ -10,8 +29,8 @@ export type InspirationItem = {
   url?: string;
   imageUrl?: string;
   tags: string[];
-  category?: string;
-  type?: string;
+  category?: InspirationCategory;
+  type?: InspirationType;
   colors: string[];
   frameworks?: string[];
   libraries?: string[];
@@ -24,7 +43,7 @@ export type InspirationItem = {
 
 type InspirationStore = {
   items: InspirationItem[];
-  addItem: (item: Omit<InspirationItem, 'id' | 'createdAt'>) => void;
+  addItem: (item: Omit<InspirationItem, "id" | "createdAt">) => void;
   removeItem: (id: string) => void;
   updateItem: (id: string, item: Partial<InspirationItem>) => void;
 };
@@ -51,12 +70,12 @@ export const useInspirationStore = create<InspirationStore>()(
       updateItem: (id, updatedItem) =>
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === id ? { ...item, ...updatedItem } : item
+            item.id === id ? { ...item, ...updatedItem } : item,
           ),
         })),
     }),
     {
-      name: 'inspiration-store',
-    }
-  )
+      name: "inspiration-store",
+    },
+  ),
 );
