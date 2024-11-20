@@ -1,7 +1,16 @@
 "use client";
 
+import { CATEGORY_COLORS, TYPE_COLORS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import {
+  InspirationItem,
+  useInspirationStore,
+} from "@/store/inspiration-store";
 import { motion } from "framer-motion";
-import { useInspirationStore } from "@/store/inspiration-store";
+import { ExternalLink, Trash2 } from "lucide-react";
+import { EmptyState } from "./empty-state";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import {
   Table,
   TableBody,
@@ -10,23 +19,37 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { ExternalLink, Trash2 } from "lucide-react";
-import { CATEGORY_COLORS, TYPE_COLORS } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 
-export function InspirationList({ searchQuery }: { searchQuery: string }) {
+type InspirationListProps = {
+  searchQuery: string;
+  onAddNew?: () => void;
+};
+
+export function InspirationList({
+  searchQuery,
+  onAddNew,
+}: InspirationListProps) {
   const { items, removeItem } = useInspirationStore();
 
   const filteredItems = items.filter(
-    (item) =>
+    (item: InspirationItem) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      item.tags.some((tag: string) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
   );
+
+  if (filteredItems.length === 0) {
+    return (
+      <EmptyState
+        title="No inspirations found"
+        description="Add your first inspiration to get started"
+        buttonText="Add New"
+        onButtonClick={onAddNew}
+      />
+    );
+  }
 
   return (
     <div className="rounded-lg border">
@@ -67,7 +90,11 @@ export function InspirationList({ searchQuery }: { searchQuery: string }) {
               <TableCell>
                 <div className="flex flex-wrap gap-1">
                   {item.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="font-normal">
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="font-normal"
+                    >
                       {tag}
                     </Badge>
                   ))}
@@ -75,14 +102,24 @@ export function InspirationList({ searchQuery }: { searchQuery: string }) {
               </TableCell>
               <TableCell>
                 {item.category && (
-                  <Badge className={cn("font-normal", CATEGORY_COLORS[item.category] || CATEGORY_COLORS.Other)}>
+                  <Badge
+                    className={cn(
+                      "font-normal",
+                      CATEGORY_COLORS[item.category] || CATEGORY_COLORS.Other,
+                    )}
+                  >
                     {item.category}
                   </Badge>
                 )}
               </TableCell>
               <TableCell>
                 {item.type && (
-                  <Badge className={cn("font-normal", TYPE_COLORS[item.type] || TYPE_COLORS.Other)}>
+                  <Badge
+                    className={cn(
+                      "font-normal",
+                      TYPE_COLORS[item.type] || TYPE_COLORS.Other,
+                    )}
+                  >
                     {item.type}
                   </Badge>
                 )}

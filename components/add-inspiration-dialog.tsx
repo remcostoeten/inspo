@@ -1,10 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { InspirationCategory, InspirationType, useInspirationStore } from "@/store/inspiration-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { ColorPicker } from "./color-picker";
+import { ImageUpload } from "./image-upload";
 import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import {
   Form,
   FormControl,
@@ -15,13 +20,6 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { useInspirationStore } from "@/store/inspiration-store";
-import { toast } from "sonner";
-import { ColorPicker } from "./color-picker";
-import { ImageUpload } from "./image-upload";
-import { Checkbox } from "./ui/checkbox";
-import { Slider } from "./ui/slider";
 import {
   Select,
   SelectContent,
@@ -29,6 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Slider } from "./ui/slider";
+import { Textarea } from "./ui/textarea";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -96,12 +96,14 @@ export function AddInspirationDialog({
   });
 
   const addItem = useInspirationStore((state) => state.addItem);
-
   function onSubmit(values: z.infer<typeof formSchema>) {
-    addItem({
+    const formattedValues = {
       ...values,
       tags: values.tags ? values.tags.split(",").map((tag) => tag.trim()) : [],
-    });
+      type: values.type as InspirationType | undefined,
+      category: values.category as InspirationCategory | undefined,
+    };
+    addItem(formattedValues);
     toast.success("Inspiration added successfully!");
     form.reset();
     onOpenChange(false);
@@ -244,14 +246,9 @@ export function AddInspirationDialog({
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="react, nextjs, tailwind"
-                      {...field}
-                    />
+                    <Input placeholder="react, nextjs, tailwind" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Separate tags with commas
-                  </FormDescription>
+                  <FormDescription>Separate tags with commas</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -302,7 +299,9 @@ export function AddInspirationDialog({
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormLabel className="!mt-0">Accessibility Features</FormLabel>
+                    <FormLabel className="!mt-0">
+                      Accessibility Features
+                    </FormLabel>
                   </FormItem>
                 )}
               />
